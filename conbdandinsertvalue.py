@@ -1,46 +1,43 @@
 import sqlite3
 
-
-
-MIN_CHOICE=1
-MAX_CHOICE=6
-SHOW_ALL_TABLES=1
-SHOW_TABLES_VALUES=2
-READ_CSV=3
-WRITE_VALUES_TO_DATABASE_CSV_FILE=4
-ADD_VALUE_TO_DATABASE_FROM_FILEWRITER=5
-
-
-EXIT=MAX_CHOICE
-
-
-
 def main():
-    choise=0
-    while choise != EXIT:
-        display_menu()
-        choise = get_choice()
-
-        if choise == SHOW_ALL_TABLES:
-            show_all_tables()
-        elif choise ==SHOW_TABLES_VALUES:
-            show_tables_values()
-        elif choise ==READ_CSV:
-            read_csv()
-        elif choise ==WRITE_VALUES_TO_DATABASE_CSV_FILE:
-            write_values_to_database_csv_file()
-        elif choise ==ADD_VALUE_TO_DATABASE_FROM_FILEWRITER:
-            add_value_to_database_from_filewriter()
 
 
-
-def add_value_to_database_from_filewriter():
     fileread = open('filewrite.csv','r')
     file_contents=fileread.read()
     fileread.close()
     file_contents2 = file_contents.split('\n')
+
+
+
+
     conn = sqlite3.connect('db.sqlite3')
+
     cur = conn.cursor()
+
+    # websearch_basecabelmarking    websearch_way   websearch_out   websearch_in
+    # cur.execute(''' SELECT name FROM sqlite_master WHERE type='table'; ''')
+    # result = cur.fetchall()
+    # print(result)
+    # print('\n')
+
+    # cur.execute(''' SELECT * FROM websearch_out; ''')
+    # result = cur.fetchall()
+
+    # print(result)
+    # print('\n')
+    
+    # cur.execute(''' SELECT * FROM websearch_basecabelmarking; ''')
+    # result = cur.fetchall()
+
+    # print(result)
+    # print("\n")
+
+    # data  = cur.execute(''' SELECT * FROM websearch_basecabelmarking; ''')
+ 
+    # for column in data.description:
+    #     print(column[0],end=" ")
+    # print("\n")
     idWebsearchOut = ''
     idWebsearchIn = ''
     idWebsearchWay= ''
@@ -77,136 +74,28 @@ def add_value_to_database_from_filewriter():
                 addWebsearchBaseCabelMarking(a[0],inOutWebsearch[0][0],inOutWebsearch[0][1],idWebsearchWay)
             else:
                 print("This cabel have a data base")
+
+
+            
+        # if result2:
+        #     print(result2[0][0])
+            
+        # if not result:
+        #     cur.execute(f''' SELECT id FROM websearch_out WHERE side ='{file_contents2[i]}' AND detector = '{}' AND cameranumber = {}; ''')
+
+
+
+
+    # cur.execute(''' SELECT * FROM websearch_basecabelmarking WHERE label ='WTO05R12C3LV4'; ''')
+    # result = cur.fetchall()
+
+    # print(not result)
+    # print('\n')
+    # if not result:
+    #     print("It is empty")
+
     conn.commit()
     conn.close()
-
-
-
-def write_values_to_database_csv_file():
-    fileread = open('test.csv','r')
-    file_contents=fileread.read()
-    fileread.close()
-
-    file_contents2 = file_contents.split('\n')
-
-    test3=file_contents2[0:len(file_contents2)-1]
-    for i in range(len(file_contents2)-1):
-        if i == 0:
-            test3[i]= 'label;'+file_contents2[i]
-        else:
-            # print(file_contents2)
-            # print('\n')
-            # print(file_contents2[0]+'\n')
-            a = file_contents2[i].split(";")
-            # print(a)
-            # print(a[7][0])
-            # b = a[0].split(',')
-            # print(b)
-            # print(file_contents2[i][0]+'\n')
-            test3[i]= a[7][0]
-            if a[8] == 'Magnet Yoke':
-                test3[i]=test3[i]+'MR'
-            else:
-                test3[i]=test3[i]+a[8][0:2]
-            test3[i]=test3[i]
-            if len(a[9])==1:
-                test3[i]=test3[i]+'0'+a[9]
-            else:
-                test3[i]=test3[i]+a[9]
-            test3[i]=test3[i]+"R"+a[0][0]+a[1]+a[2][0]
-            if len(a[3])==1:
-                test3[i]=test3[i]+'0'+a[3]
-            else:
-                test3[i]=test3[i]+a[3]
-
-            if a[4] == 'Thermostabilizzation':
-                test3[i] = test3[i]+'TS'
-            elif a[4] == 'TPC centerl membrane':
-                test3[i] = test3[i]+'CM'
-            elif a[4] == 'Sensors':
-                test3[i] = test3[i]+'SN'
-            elif a[4] == 'ROC Chamber':
-                test3[i] = test3[i]+'RC'
-            elif a[4] == 'DAQ':
-                test3[i] = test3[i]+'DQ'
-            else:
-                b = a[4].split()
-                test3[i] = test3[i]+b[0][0]+b[1][0]
-            if len(a[5])==1:
-                test3[i]=test3[i]+'00'+a[5]
-            elif len(a[5])==2:
-                test3[i]=test3[i]+'0'+a[5]
-            else:
-                test3[i]=test3[i]+a[5]
-            test3[i]=test3[i]+ ';'+file_contents2[i]
-
-    filewrite = open('filewrite.csv','w')
-    for test in test3:
-        filewrite.write(test+'\n')
-    filewrite.close()
-    
-
-def read_csv():
-    file = open('websearch_in.csv','r')
-
-    file_contents=file.read()
-
-    file.close()
-
-    print(file_contents)
-
-
-def show_tables_values():
-    conn = sqlite3.connect('db.sqlite3')
-    bd = scaner('название базы данных')
-
-    cur = conn.cursor()
-    data  = cur.execute(f''' SELECT * FROM {bd}; ''')
-    print("\n")
-    for column in data.description:
-        print(column[0],end=" ")
-    print("\n")
-    result = cur.fetchall()
-    for res in result:
-        print(res)
-    conn.commit()
-    conn.close()
-
-def show_all_tables():
-    conn = sqlite3.connect('db.sqlite3')
-
-    cur = conn.cursor()
-    cur.execute(''' SELECT name FROM sqlite_master WHERE type='table'; ''')
-    result = cur.fetchall()
-    print(result)
-    conn.commit()
-    conn.close()
-
-
-
-def display_menu():
-    print('\n--------МЕНЮ-------')
-    print('1. Показать все таблицы')
-    print('2. Показать значения таблицы')
-    print('3. Показать значения CSV файла')
-    print('4. Считать csv файл и создать filewrite с маркировкой')
-    print('5. Добавить все данные с файла filewrite в базу данных')
-    print('6. Выход')
-
-def get_choice():
-    choice=int(input('Введите ваш вариант: '))
-
-    while choice < MIN_CHOICE or choice > MAX_CHOICE:
-        print('Допустимые варинаты таковы: {MIN_CHOICE} - {MAX_CHOICE}')
-        choice=int(input('Введите ваш вариант: '))
-
-    return choice
-
-
-def scaner(str):
-    choice=input(f'Введите {str}: ')
-    return choice
-
 
 def idWebsearchBaseCabelMarking(a):
     conn = sqlite3.connect('db.sqlite3')
@@ -313,6 +202,8 @@ def selectIdFromWebsearch_out(a,b,c):
         return result[0][0]
     else:
         return ''
+
+
 
 
 
