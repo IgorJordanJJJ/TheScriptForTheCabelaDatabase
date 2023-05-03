@@ -1,0 +1,251 @@
+from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+# Create your models here.
+
+
+
+class Out(models.Model):
+
+    class Meta:
+        verbose_name = 'Out'
+        verbose_name_plural = 'Outs'
+    
+    SIDE_MAGNET = [
+        ('West','West'),
+        ('East','East'),
+    ]
+    DETECTORS = [
+        ('TPC','TPC'),
+        ('TOF','TOF'),
+        ('ECAL','ECAL'),
+        ('FFD','FFD'),
+        ('Magnet Yoke','Magnet Yoke'),
+    ]
+    CAMERNUMBERS = [
+        ('01','01'),
+        ('02','02'),
+        ('03','03'),
+        ('04','04'),
+        ('05','05'),
+        ('06','06'),
+        ('07','07'),
+        ('08','08'),
+        ('09','09'),
+        ('10','10'),
+        ('11','11'),
+        ('12','12'),
+        ('13','13'),
+        ('14','14'),
+        ('15','15'),
+        ('16','16'),
+        ('17','17'),
+        ('18','18'),
+        ('19','19'),
+        ('20','20'),
+        ('21','21'),
+        ('22','22'),
+        ('23','23'),
+        ('24','24'),
+        ('25','25'),
+    ]
+
+    side = models.CharField(max_length=4,choices=SIDE_MAGNET)
+    detector = models.CharField(max_length=13, choices= DETECTORS)
+    cameranumber = models.CharField(max_length=2, choices= CAMERNUMBERS)
+    commentout = models.CharField( max_length=250, null=True, blank=True)
+
+    def __str__(self):
+        """Unicode representation of Out."""
+        return f'{self.side} {self.detector} {self.cameranumber} {self.commentout}'
+
+class IN(models.Model):
+
+    class Meta:
+    
+        verbose_name = 'IN'
+        verbose_name_plural = 'INs'
+
+    RACK = [
+        ('0 - Magnet Yoke','0 - Magnet Yoke'),
+        ('1 - EI. Platfom','1 - EI. Platfom'),
+        ('2 - EI. Platfom','2 - EI. Platfom'),
+        ('3 - EI. Platfom','3 - EI. Platfom'),
+        ('4 - EI. Platfom','4 - EI. Platfom'),
+    ]
+
+
+    EQUIPMENT = [
+        ('Crate','Crate'),
+        ('Switch','Switch'),
+        ('Path Panel','Path Panel'),
+    ]
+
+    SIGNAL = [
+        ('Gas System','Gas System'),
+        ('Low Volrage','Low Volrage'),
+        ('Hight Voltage','Hight Voltage'),
+        ('DAQ','DAQ'),
+        ('ROC Chamber','ROC Chamber'),
+        ('Sensors','Sensors'),
+        ('TPC centerl membrane','TPC centerl membrane'),
+        ('Thermostabilizzation','Thermostabilizzation'),
+        ('Cooling System','Cooling System'),
+        ('Laser Sysem','Laser Sysem'),
+        ('Hydraulic Actuator','Hydraulic Actuator'),
+        ('Fiber Optics','Fiber Optics'),
+        ('Signal Cabel','Signal Cabel'),
+    ]
+
+
+    rack = models.CharField(max_length=17, choices=RACK)
+    rack_number = models.IntegerField(
+        default=1, 
+        validators=[
+        MaxValueValidator(8),
+        MinValueValidator(1)
+        ]
+        )
+    equipment = models.CharField(max_length=12, choices=EQUIPMENT)
+    equipmentnumber = models.IntegerField()
+    signal = models.CharField(max_length=25, choices= SIGNAL)
+    signalnumber = models.IntegerField(
+        default=1, 
+        validators=[
+        MaxValueValidator(500),
+        MinValueValidator(1)
+        ]
+        )
+    commentin = models.CharField( max_length=250, null=True, blank=True)
+
+    def __str__(self):
+        """Unicode representation of IN."""
+        return f'{self.rack} {self.rack_number} {self.equipment} {self.equipmentnumber} {self.signal} {self.signalnumber} {self.commentin}'
+    
+
+
+class Way(models.Model):
+
+    class Meta:
+        """Meta definition for Way."""
+
+        verbose_name = 'Way'
+        verbose_name_plural = 'Ways'
+
+    Tray = [
+        ('T01','Tray-01'),
+        ('T02','Tray-02'),
+        ('T03','Tray-03'),
+        ('T04','Tray-04'),
+        ('T05','Tray-05'),
+        ('T06','Tray-06'),
+        ('T11','Tray-11'),
+        ('T12','Tray-12'),
+        ('T13','Tray-13'),
+        ('T14','Tray-14'),
+        ('T15','Tray-15'),
+        ('T16','Tray-16'),
+    ]
+
+    tray = models.CharField(max_length=3 ,choices=Tray)
+    numberofthewindowinbeam = models.IntegerField(
+        default=1, 
+        validators=[
+        MaxValueValidator(28),
+        MinValueValidator(1)
+        ]
+        )
+    numberointhepowerframe = models.IntegerField(
+        default=1, 
+        validators=[
+        MaxValueValidator(28),
+        MinValueValidator(1)
+        ]
+        )
+    commetnway = models.CharField(max_length=250, null= True, blank=True)
+
+
+    def __str__(self):
+        """Unicode representation of Way."""
+        return f'{self.tray}, {self.numberofthewindowinbeam}, {self.numberointhepowerframe}, {self.commetnway}'
+
+
+
+
+
+
+class BaseCabelMarking(models.Model):
+
+    class Meta:
+        """Meta definition for BaseCabelMarking."""
+
+        verbose_name = 'BaseCabelMarking'
+        verbose_name_plural = 'BaseCabelMarkings'
+
+    outinfo = models.ForeignKey('OUT', on_delete=models.PROTECT, null=True,blank=True)
+    ininfo = models.ForeignKey('IN', on_delete=models.PROTECT, null=True,blank=True)
+    label = models.CharField(max_length=18, blank=True, null=True)
+    tray = models.ForeignKey('Way', on_delete=models.PROTECT, null=True,blank=True)
+
+    
+
+
+    def save(self, *args, **kwargs):
+        if self.outinfo and self.ininfo:
+            self.label=self.outinfo.side[0]
+            if self.outinfo.detector == 'Magnet Yoke':
+                self.label = self.label+'MR'
+            else:
+                self.label = self.label+self.outinfo.detector[0:2]
+            self.label = self.label+self.outinfo.cameranumber+ \
+            "R"+\
+            self.ininfo.rack[0]+f'{self.ininfo.rack_number}'+\
+            self.ininfo.equipment[0] + f'{self.ininfo.equipmentnumber}'
+            if self.ininfo.signal == 'Thermostabilizzation':
+                self.label = self.label+'TS'
+            elif self.ininfo.signal == 'TPC centerl membrane':
+                self.label = self.label+'CM'
+            elif self.ininfo.signal == 'Sensors':
+                self.label = self.label+'SN'
+            elif self.ininfo.signal == 'ROC Chamber':
+                self.label = self.label+'RC'
+            elif self.ininfo.signal == 'DAQ':
+                self.label = self.label+'DQ'
+            else:
+                a = self.ininfo.signal.split()
+                self.label = self.label+a[0][0]+a[1][0]
+            self.label = self.label+f'{self.ininfo.signalnumber}'
+        elif self.outinfo:
+            self.label=self.outinfo.side[0]
+            if self.outinfo.detector == 'Magnet Yoke':
+                self.label = self.label+'MR'
+            else:
+                self.label = self.label+self.outinfo.detector[0:2]
+            self.label = self.label+self.outinfo.cameranumber
+            self.label = self.label+self.outinfo.cameranumber
+        elif self.ininfo:
+            self.label = self.ininfo.rack[0]+f'{self.ininfo.rack_number}'+ \
+            self.ininfo.equipment[0] +f'{self.ininfo.equipmentnumber}'
+            if self.ininfo.signal == 'Thermostabilizzation':
+                self.label = self.label+'TS'
+            elif self.ininfo.signal == 'TPC centerl membrane':
+                self.label = self.label+'CM'
+            elif self.ininfo.signal == 'Sensors':
+                self.label = self.label+'SN'
+            elif self.ininfo.signal == 'ROC Chamber':
+                self.label = self.label+'RC'
+            elif self.ininfo.signal == 'DAQ':
+                self.label = self.label+'DQ'
+            else:
+                a = self.ininfo.signal.split()
+                self.label = self.label+a[0][0]+a[1][0]
+            self.label = self.label+f'{self.ininfo.signalnumber}'
+        else:
+            self.label = "NULL"
+        super(BaseCabelMarking, self).save(*args, **kwargs)
+
+
+    def __str__(self):
+        """Unicode representation of BaseCabelMarking."""
+        return f'{self.outinfo}, {self.ininfo}, {self.label}, {self.tray}'
+
