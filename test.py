@@ -32,6 +32,13 @@ def main():
 
 
 def write_values_to_database_csv_file():
+    file = open('test.csv','r')
+
+    file_contents=file.read()
+
+    file.close()
+
+    print(file_contents)
     
 
 def read_csv():
