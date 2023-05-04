@@ -1,0 +1,14 @@
+rack;rack_number;equipment;equipmentnumber;signal;signalnumber;commentin;side;detector;cameranumber;commentout;tray;numberofthewindowinbeam;numberointhepowerframe;commetnway;";"
+0 - Magnet Yoke;1;Crate;1;Gas System;1;В данной ячейке может быть любой комментарий ;West;TPC;1;В данной ячейке может быть любой комментарий ;T01;1;1;В данной ячейке может быть любой комментарий ;
+1 - EI. Platfom;8;Switch;10000000;Low Volrage;500;NULL;East;TOF;25;NULL;T02;28;28;NULL;
+2 - EI. Platfom;;Path Panel;;Hight Voltage;;NULL;;ECAL;;NULL;T03;;;NULL;
+3 - EI. Platfom;;;;DAQ;;NULL;;FFD;;NULL;T04;;;NULL;
+4 - EI. Platfom;;;;ROC Chamber;;NULL;;Magnet Yoke;;NULL;T05;;;NULL;
+;;;;Sensors;;NULL;;;;NULL;T06;;;NULL;
+;;;;TPC centerl membrane;;NULL;;;;NULL;T11;;;NULL;
+;;;;Thermostabilizzation;;NULL;;;;NULL;T12;;;NULL;
+;;;;Cooling System;;NULL;;;;NULL;T13;;;NULL;
+;;;;Laser Sysem;;NULL;;;;NULL;T14;;;NULL;
+;;;;Hydraulic Actuator;;NULL;;;;NULL;T15;;;NULL;
+;;;;Fiber Optics;;NULL;;;;NULL;T16;;;NULL;
+;;;;Signal Cabel;;NULL;;;;NULL;;;;NULL;

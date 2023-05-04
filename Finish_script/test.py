@@ -9,6 +9,8 @@ SHOW_TABLES_VALUES=2
 READ_CSV=3
 WRITE_VALUES_TO_DATABASE_CSV_FILE=4
 ADD_VALUE_TO_DATABASE_FROM_FILEWRITER=5
+
+
 EXIT=MAX_CHOICE
 
 
@@ -59,10 +61,13 @@ def add_value_to_database_from_filewriter():
             if idWebsearchIn=='':
                 addWebsearch_in(a[1],a[2],a[3],a[4],a[5],a[6],a[7])
                 idWebsearchIn = selectIdFromWebsearch_in(a[1],a[2],a[3],a[4],a[5],a[6])
-            idWebsearchWay = selectIdFromWebsearch_way(a[12],a[13],a[14])
-            if idWebsearchWay=='':
-                addWebsearch_way(a[12],a[13],a[14],a[15])
+            if a[12]=='NULL' and a[13]=='NULL' and a[14]=='NULL':
+                idWebsearchWay = 'NULL'
+            else:
                 idWebsearchWay = selectIdFromWebsearch_way(a[12],a[13],a[14])
+                if idWebsearchWay=='':
+                    addWebsearch_way(a[12],a[13],a[14],a[15])
+                    idWebsearchWay = selectIdFromWebsearch_way(a[12],a[13],a[14])
             addWebsearchBaseCabelMarking(a[0],idWebsearchIn,idWebsearchOut,idWebsearchWay)
         else:
             idWebsearchWay = selectIdFromWebsearch_way(a[12],a[13],a[14])
@@ -117,6 +122,8 @@ def write_values_to_database_csv_file():
             else:
                 test3[i]=test3[i]+a[3]
 
+            test3[i]=test3[i]+'-'
+
             if a[4] == 'Thermostabilizzation':
                 test3[i] = test3[i]+'TS'
             elif a[4] == 'TPC centerl membrane':
@@ -145,7 +152,9 @@ def write_values_to_database_csv_file():
     
 
 def read_csv():
-    file = open('websearch_in.csv','r')
+
+    namefilecsv = scaner('название файла csv')
+    file = open(f'{namefilecsv}','r')
 
     file_contents=file.read()
 
@@ -235,7 +244,16 @@ def addWebsearchBaseCabelMarking(a,b,c,d):
     cur = conn.cursor()
     cur.execute(f''' SELECT MAX(id) FROM websearch_basecabelmarking; ''')
     result = cur.fetchall()
-    cur.execute(f''' INSERT INTO websearch_basecabelmarking (id, label, ininfo_id, outinfo_id,tray_id) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}'); ''')
+    if d == "NULL":
+        if result[0][0]==None:
+            cur.execute(f''' INSERT INTO websearch_basecabelmarking (id, label, ininfo_id, outinfo_id) VALUES('0', '{a}', '{b}', '{c}'); ''')
+        else:
+            cur.execute(f''' INSERT INTO websearch_basecabelmarking (id, label, ininfo_id, outinfo_id) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}'); ''')
+    else:
+        if result[0][0]==None:
+            cur.execute(f''' INSERT INTO websearch_basecabelmarking (id, label, ininfo_id, outinfo_id,tray_id) VALUES('0', '{a}', '{b}', '{c}', '{d}'); ''')
+        else:
+            cur.execute(f''' INSERT INTO websearch_basecabelmarking (id, label, ininfo_id, outinfo_id,tray_id) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}'); ''')
     result = cur.fetchall()
     conn.commit()
     conn.close()
@@ -245,7 +263,10 @@ def addWebsearch_way(a,b,c,d):
     cur = conn.cursor()
     cur.execute(f''' SELECT MAX(id) FROM websearch_way; ''')
     result = cur.fetchall()
-    cur.execute(f''' INSERT INTO websearch_way (id, tray, numberofthewindowinbeam, numberointhepowerframe,commetnway) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}'); ''')
+    if result[0][0]==None:
+        cur.execute(f''' INSERT INTO websearch_way (id, tray, numberofthewindowinbeam, numberointhepowerframe,commetnway) VALUES('0', '{a}', '{b}', '{c}', '{d}'); ''')
+    else:
+        cur.execute(f''' INSERT INTO websearch_way (id, tray, numberofthewindowinbeam, numberointhepowerframe,commetnway) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}'); ''')
     result = cur.fetchall()
     conn.commit()
     conn.close()
@@ -267,7 +288,10 @@ def addWebsearch_in(a,b,c,d,e,f,r):
     cur = conn.cursor()
     cur.execute(f''' SELECT MAX(id) FROM websearch_in; ''')
     result = cur.fetchall()
-    cur.execute(f''' INSERT INTO websearch_in (id, rack, rack_number, equipment,equipmentnumber,signal,signalnumber,commentin) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}', '{e}', '{f}', '{r}'); ''')
+    if result[0][0]==None:
+        cur.execute(f''' INSERT INTO websearch_in (id, rack, rack_number, equipment,equipmentnumber,signal,signalnumber,commentin) VALUES('0', '{a}', '{b}', '{c}', '{d}', '{e}', '{f}', '{r}'); ''')
+    else:
+        cur.execute(f''' INSERT INTO websearch_in (id, rack, rack_number, equipment,equipmentnumber,signal,signalnumber,commentin) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}', '{e}', '{f}', '{r}'); ''')
     result = cur.fetchall()
     conn.commit()
     conn.close()
@@ -290,10 +314,13 @@ def addWebsearch_out(a,b,c,d):
     cur = conn.cursor()
     cur.execute(f''' SELECT MAX(id) FROM websearch_out; ''')
     result = cur.fetchall()
-    if len(c)==1:
-        cur.execute(f''' INSERT INTO websearch_out (id, side, detector, cameranumber,commentout) VALUES('{result[0][0]+1}', '{a}', '{b}', '0{c}', '{d}'); ''')
+    if result[0][0]==None:
+        cur.execute(f''' INSERT INTO websearch_out (id, side, detector, cameranumber,commentout) VALUES('0', '{a}', '{b}', '0{c}', '{d}'); ''')
     else:
-        cur.execute(f''' INSERT INTO websearch_out (id, side, detector, cameranumber,commentout) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}'); ''')
+        if len(c)==1:
+            cur.execute(f''' INSERT INTO websearch_out (id, side, detector, cameranumber,commentout) VALUES('{result[0][0]+1}', '{a}', '{b}', '0{c}', '{d}'); ''')
+        else:
+            cur.execute(f''' INSERT INTO websearch_out (id, side, detector, cameranumber,commentout) VALUES('{result[0][0]+1}', '{a}', '{b}', '{c}', '{d}'); ''')
     conn.commit()
     conn.close()
 

@@ -1,7 +1,0 @@
-label;rack;rack_number;equipment;equipmentnumber;signal;signalnumber;commentin;side;detector;cameranumber;commentout;tray;numberofthewindowinbeam;numberointhepowerframe;commetnway;";"
-WTO05R12C3LV4;0 - Magnet Yoke;3;Crate;4;Low Volrage;4;fvdvfdvvdv;East;TOF;3;dgfdgdgfdgdg;T02;6;5;gdfgdfbcddzbdfbfb;";"
-WTO05R17S7CM7;1 - EI. Platfom;6;Switch;4;Hight Voltage;6;;East;TPC;2;dgfdgdgfdgdg;T12;6;6;gdfgdfbcddzbdfbfb;";"
-ETO03R45P5CS5;1 - EI. Platfom;7;Switch;7;TPC centerl membrane;7;dfgdgdgfdgdg;West;TOF;5;dgfdgdgfdgdg;T11;12;13;rrfdsvgfdvfdbhbf;";"
-;0 - Magnet Yoke;3;Crate;2;Hight Voltage;14;dfgdgdgfdgdg;West;ECAL;6;fghfhfhfhftg;;12;6;gdfgdfbcddzbdfbfb;";"
-;1 - EI. Platfom;2;Crate;3;Low Volrage;4;nfgdhfsghb;West;TOF;5;ertgrghtfgrtg;;12;6;gdfgdfbcddzbdfbfb;";"
-;4 - EI. Platfom;5;Path Panel;5;Cooling System;5;bhfhbfhbf;;TOF;6;fghfhfhfhftg;;12;6;gdfgdfbcddzbdfbfb;";"
